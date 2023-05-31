@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "intent-inference"
+version = "0.1.0"
+description = "Predicts selection intent"
+authors = ["Jake Wagoner, Kiran Gadhave"]
+readme = "README.md"
+packages = [{include = "intent_inference"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.dev-dependencies]
+tox = "^4.5.2"
+pytest = "^7.3.1"
+mypy = "^1.3.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
