@@ -1,3 +1,5 @@
 .DS_Store
 dist/
 tests/__pycache__
+.vscode/
+.mypy_cache/
