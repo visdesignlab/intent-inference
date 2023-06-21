@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Predicts selection intent"
 authors = ["Jake Wagoner, Kiran Gadhave"]
 readme = "README.md"
-packages = [{include = "intent_inference"}]
+packages = [{include = "src/intent_inference"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
