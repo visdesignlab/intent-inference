@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 
-from ..scalers.robust import fit_transform
+from scalers.robust import fit_transform
 
 
 def kmeans_params(lower_limit=None, upper_limit=None):
@@ -16,6 +16,7 @@ def kmeans_cluster(data: np.ndarray, n_clusters, init_centers=None):
     clf = KMeans(
         n_clusters=n_clusters,
         init="k-means++" if init_centers is None else init_centers,
+        n_init="auto",
     )
 
     clf.fit(scaled_data)

@@ -1,12 +1,13 @@
-from typing import Any, List
+import json
+from typing import Dict, List
 
 import numpy as np
 import pandas as pd
-from .compute.dbscan import dbscan
-from .compute.isolationforest_outlier import isolationforest_outlier
-from .compute.kmeans_cluster import kmeans_cluster
-from .compute.pareto import pareto
-from .compute.regression import regression
+from compute.dbscan import dbscan
+from compute.isolationforest_outlier import isolationforest_outlier
+from compute.kmeans_cluster import kmeans_cluster
+from compute.pareto import pareto
+from compute.regression import regression
 
 from .algorithms.base import AlgorithmBase
 
@@ -17,8 +18,8 @@ class Intent:
         intent: str,
         algorithm: str,
         dimensions: str,
-        params: Any,
-        info: Any = None,
+        params: Dict[str, any],
+        info: Dict[str, any] = None,
         output: str = "",
         **kwargs
     ):
@@ -28,8 +29,8 @@ class Intent:
         self.dimensions = (
             dimensions.split(",") if isinstance(dimensions, str) else dimensions
         )
-        self.params = params
-        self.info = info
+        self.params = json.loads(params)
+        self.info = json.loads(info)
 
     @staticmethod
     def from_algorithm(alg: AlgorithmBase):
@@ -47,6 +48,7 @@ class Intent:
 
         if self.intent == "Cluster":
             if self.algorithm == "KMeans":
+                print(self.info)
                 clf = kmeans_cluster(
                     subset.values,
                     self.params["n_clusters"],

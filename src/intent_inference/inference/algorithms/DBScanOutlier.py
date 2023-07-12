@@ -2,10 +2,11 @@ from typing import List
 
 import pandas as pd
 
-from ..compute.dbscan import dbscan
+from compute.dbscan import dbscan
+from .base import AlgorithmBase
 
 
-class DBScanOutlier:
+class DBScanOutlier(AlgorithmBase):
     def __init__(
         self,
         data: pd.DataFrame,

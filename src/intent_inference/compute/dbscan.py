@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cluster import DBSCAN
 
-from ..scalers.robust import fit_transform
+from scalers.robust import fit_transform
 
 
 def dbscan_params(rows: int):

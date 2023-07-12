@@ -2,10 +2,10 @@ from typing import List
 
 import pandas as pd
 
-from .compute.dbscan import dbscan_params
-from .compute.isolationforest_outlier import isolationforest_params
-from .compute.kmeans_cluster import kmeans_params
-from .compute.regression import regression_params
+from compute.dbscan import dbscan_params
+from compute.isolationforest_outlier import isolationforest_params
+from compute.kmeans_cluster import kmeans_params
+from compute.regression import regression_params
 from .algorithms.DBScanCluster import DBScanCluster
 from .algorithms.DBScanOutlier import DBScanOutlier
 from .algorithms.IsolationForestOutlier import IsolationForestOutlier
@@ -60,7 +60,7 @@ def sort_and_keep_unique(predictions: List[Prediction]):
 
     preds = pd.DataFrame(preds)
 
-    # preds.rank_jaccard = preds.rank_jaccard.round(5)
+    preds.rank_jaccard = preds.rank_jaccard.round(5)
 
     grouped_preds = preds.groupby(["intent", "algorithm", "rank_jaccard"])
 

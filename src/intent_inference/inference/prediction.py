@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy.spatial import ConvexHull
 
-from ..utils.jaccard_similarity import jaccard_similarity
+from utils import jaccard_similarity
 from .intent import Intent
 
 
@@ -26,18 +26,24 @@ def get_hull(data):
     return []
 
 
-# Modify app/src/types/Prediction.ts in conjunction
+# TODO: consider changing names of this and Intent
 class Prediction:
     def __init__(self, intent: Intent):
         self.intent = intent.intent
         self.algorithm = intent.algorithm
-        self.info = json.loads(intent.info)
+        self.info = (
+            json.loads(intent.info) if isinstance(intent.info, str) else intent.info
+        )
         self.dimensions = intent.dimensions
-        self.params = json.loads(intent.params)
+        self.params = (
+            json.loads(intent.params)
+            if isinstance(intent.params, str)
+            else intent.params
+        )
         self.hash = None
         self.rank_jaccard = -1
-        self.rank_auto_complete = -1
-        self.rank_nb = -1
+        self.rank_auto_complete = -1  # not used, consider bringing back
+        self.rank_nb = -1  # not used, consider bringing back
         self.members = []
         self.membership_stats = []
 
@@ -55,6 +61,7 @@ class Prediction:
             "membership_stats": self.membership_stats,
         }
 
+    # TODO: not necessarily needed
     @staticmethod
     def from_intent(
         intent: Intent, data: pd.DataFrame, selections: List[str]
@@ -168,8 +175,11 @@ class Prediction:
 
 def get_stats(members, sels):
     stats = {
+        # in prediction but not in selection
         "ipns": list(set(members) - set(sels)),
+        # in selection but not in prediction
         "isnp": list(set(sels) - set(members)),
+        # in both
         "matches": list(set(sels).intersection(set(members))),
     }
     return stats

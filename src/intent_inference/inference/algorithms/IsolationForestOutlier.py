@@ -2,7 +2,7 @@ from typing import List
 
 import pandas as pd
 
-from ..compute.isolationforest_outlier import isolationforest_outlier
+from compute.isolationforest_outlier import isolationforest_outlier
 from .base import AlgorithmBase
 
 
