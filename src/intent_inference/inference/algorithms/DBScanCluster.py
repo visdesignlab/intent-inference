@@ -2,7 +2,7 @@ from typing import List
 
 import pandas as pd
 
-from compute.dbscan import dbscan
+from ...compute.dbscan import dbscan
 from .base import AlgorithmBase
 
 

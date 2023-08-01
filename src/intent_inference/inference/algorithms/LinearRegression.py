@@ -2,7 +2,7 @@ from typing import List
 
 import pandas as pd
 
-from compute.regression import regression
+from ...compute.regression import regression
 from .base import AlgorithmBase
 
 

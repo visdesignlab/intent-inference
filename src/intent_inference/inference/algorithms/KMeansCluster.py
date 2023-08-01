@@ -2,7 +2,7 @@ from typing import List
 
 import pandas as pd
 
-from compute.kmeans_cluster import kmeans_cluster
+from ...compute.kmeans_cluster import kmeans_cluster
 from .base import AlgorithmBase
 
 

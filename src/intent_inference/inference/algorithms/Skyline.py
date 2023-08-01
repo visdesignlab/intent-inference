@@ -2,7 +2,7 @@ from itertools import product
 from typing import List
 
 import pandas as pd
-from compute.pareto import pareto
+from ...compute.pareto import pareto
 
 from .base import AlgorithmBase
 

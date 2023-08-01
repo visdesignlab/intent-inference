@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy.spatial import ConvexHull
 
-from utils import jaccard_similarity
+from ..utils import jaccard_similarity
 from .intent import Intent
 
 
