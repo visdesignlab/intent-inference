@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "intent-inference"
-version = "0.1.5"
+version = "0.1.6"
 description = "Predicts selection intent"
 authors = ["Jake Wagoner, Kiran Gadhave"]
 readme = "README.md"
-packages = [{include = "intent_inference"}]
+packages = [{include = "src/intent_inference"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
