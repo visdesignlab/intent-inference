@@ -26,8 +26,6 @@ def compute_predictions(df: pd.DataFrame, dimensions: List[str], selections: Lis
     for intent in intents:
         predictions.extend(Prediction.from_intent(intent, df, selections))
 
-    print(map(lambda x: x.to_dict(), predictions))
-
     high_ranking_preds = list(filter(lambda x: x.rank_jaccard > 0.5, predictions))
 
     if len(high_ranking_preds) == 0:
@@ -48,8 +46,6 @@ def run_predictions(df: pd.DataFrame, dimensions: List[str], selections: List[an
     Compute predictions for a given dataframe, dimensions, and selections.
     Returns a list of predictions as well as the time taken to generate them.
     """
-    print(selections)
-
     start_time = time.time()
 
     preds = compute_predictions(df, dimensions, selections)
