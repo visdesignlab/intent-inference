@@ -26,7 +26,7 @@ def compute_predictions(df: pd.DataFrame, dimensions: List[str], selections: Lis
     for intent in intents:
         predictions.extend(Prediction.from_intent(intent, df, selections))
 
-    print(predictions)
+    print(predictions.map(lambda x: x.to_dict()))
 
     high_ranking_preds = list(filter(lambda x: x.rank_jaccard > 0.5, predictions))
 
