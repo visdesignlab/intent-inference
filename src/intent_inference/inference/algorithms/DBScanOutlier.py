@@ -2,8 +2,8 @@ from typing import List
 
 import pandas as pd
 
-from ...compute.dbscan import dbscan
-from .base import AlgorithmBase
+from intent_inference.compute.dbscan import dbscan
+from intent_inference.inference.algorithms.base import AlgorithmBase
 
 
 class DBScanOutlier(AlgorithmBase):

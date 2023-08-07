@@ -2,8 +2,8 @@ from typing import List
 
 import pandas as pd
 
-from ...compute.isolationforest_outlier import isolationforest_outlier
-from .base import AlgorithmBase
+from intent_inference.compute.isolationforest_outlier import isolationforest_outlier
+from intent_inference.inference.algorithms.base import AlgorithmBase
 
 
 class IsolationForestOutlier(AlgorithmBase):

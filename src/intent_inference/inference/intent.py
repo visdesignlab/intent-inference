@@ -3,11 +3,11 @@ from typing import Dict, List
 
 import numpy as np
 import pandas as pd
-from ..compute.dbscan import dbscan
-from ..compute.isolationforest_outlier import isolationforest_outlier
-from ..compute.kmeans_cluster import kmeans_cluster
-from ..compute.pareto import pareto
-from ..compute.regression import regression
+from intent_inference.compute.dbscan import dbscan
+from intent_inference.compute.isolationforest_outlier import isolationforest_outlier
+from intent_inference.compute.kmeans_cluster import kmeans_cluster
+from intent_inference.compute.pareto import pareto
+from intent_inference.compute.regression import regression
 
 from .algorithms.base import AlgorithmBase
 

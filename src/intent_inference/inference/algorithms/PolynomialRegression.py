@@ -2,8 +2,8 @@ from typing import List
 
 import pandas as pd
 
-from ...compute.regression import regression
-from .base import AlgorithmBase
+from intent_inference.compute.regression import regression
+from intent_inference.inference.algorithms.base import AlgorithmBase
 
 
 class PolynomialRegression(AlgorithmBase):

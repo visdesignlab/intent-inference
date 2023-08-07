@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 
-from ..scalers.robust import fit_transform
+from intent_inference.scalers.robust import fit_transform
 
 
 def kmeans_params(lower_limit=None, upper_limit=None):

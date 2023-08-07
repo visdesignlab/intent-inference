@@ -2,9 +2,9 @@ import time
 from typing import List
 import pandas as pd
 
-from .inference.inference import compute_intents
-from .inference.prediction import Prediction
-from .inference.inference import sort_and_keep_unique
+from intent_inference.inference.inference import compute_intents
+from intent_inference.inference.inference import sort_and_keep_unique
+from intent_inference.inference.prediction import Prediction
 
 # API: user provides dataframe, dimensions, user_selections
 # API: returns list of predictions as JSON (map to_dict() over list)

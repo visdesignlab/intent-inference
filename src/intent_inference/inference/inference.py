@@ -2,19 +2,19 @@ from typing import List
 
 import pandas as pd
 
-from ..compute.dbscan import dbscan_params
-from ..compute.isolationforest_outlier import isolationforest_params
-from ..compute.kmeans_cluster import kmeans_params
-from ..compute.regression import regression_params
-from .algorithms.DBScanCluster import DBScanCluster
-from .algorithms.DBScanOutlier import DBScanOutlier
-from .algorithms.IsolationForestOutlier import IsolationForestOutlier
-from .algorithms.KMeansCluster import KMeansCluster
-from .algorithms.LinearRegression import LinearRegression
-from .algorithms.PolynomialRegression import PolynomialRegression
-from .algorithms.Skyline import MultivariateOptimization
-from .intent import Intent
-from .prediction import Prediction
+from intent_inference.compute.dbscan import dbscan_params
+from intent_inference.compute.isolationforest_outlier import isolationforest_params
+from intent_inference.compute.kmeans_cluster import kmeans_params
+from intent_inference.compute.regression import regression_params
+from intent_inference.inference.algorithms.DBScanCluster import DBScanCluster
+from intent_inference.inference.algorithms.DBScanOutlier import DBScanOutlier
+from intent_inference.inference.algorithms.IsolationForestOutlier import IsolationForestOutlier
+from intent_inference.inference.algorithms.KMeansCluster import KMeansCluster
+from intent_inference.inference.algorithms.LinearRegression import LinearRegression
+from intent_inference.inference.algorithms.PolynomialRegression import PolynomialRegression
+from intent_inference.inference.algorithms.Skyline import MultivariateOptimization
+from intent_inference.inference.intent import Intent
+from intent_inference.inference.prediction import Prediction
 
 
 class Inference:

@@ -7,8 +7,8 @@ import numpy as np
 import pandas as pd
 from scipy.spatial import ConvexHull
 
-from ..utils import jaccard_similarity
-from .intent import Intent
+from intent_inference.utils import jaccard_similarity
+from intent_inference.inference.intent import Intent
 
 
 def get_hull(data):

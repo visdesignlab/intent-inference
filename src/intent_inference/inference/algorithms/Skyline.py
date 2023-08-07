@@ -2,9 +2,9 @@ from itertools import product
 from typing import List
 
 import pandas as pd
-from ...compute.pareto import pareto
+from intent_inference.compute.pareto import pareto
 
-from .base import AlgorithmBase
+from intent_inference.inference.algorithms.base import AlgorithmBase
 
 
 class MultivariateOptimization(AlgorithmBase):

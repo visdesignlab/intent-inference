@@ -2,8 +2,8 @@ from typing import List
 
 import pandas as pd
 
-from ...compute.kmeans_cluster import kmeans_cluster
-from .base import AlgorithmBase
+from intent_inference.compute.kmeans_cluster import kmeans_cluster
+from intent_inference.inference.algorithms.base import AlgorithmBase
 
 
 class KMeansCluster(AlgorithmBase):
