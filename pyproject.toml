@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "intent-inference"
-version = "0.1.10"
+version = "0.1.11"
 description = "Predicts selection intent"
 authors = ["Jake Wagoner, Kiran Gadhave"]
 readme = "README.md"
@@ -10,7 +10,7 @@ packages = [{include = "intent_inference", from = "src"}]
 python = "^3.8.1"
 numpy = "^1.24.3"
 scikit-learn = "^1.2.2"
-pandas = "^2.0.2"
+pandas = "^1.0.0"
 paretoset = "^1.2.3"
 vega-datasets = "^0.9.0"
 
