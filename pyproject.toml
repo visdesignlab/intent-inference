@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "intent-inference"
-version = "0.1.16"
+version = "0.1.17"
 description = "Predicts selection intent"
 authors = ["Jake Wagoner, Kiran Gadhave"]
 readme = "README.md"
