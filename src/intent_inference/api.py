@@ -55,3 +55,13 @@ def run_predictions(df: pd.DataFrame, dimensions: List[str], selections: List[an
     json_ret = {"predictions": preds, "time": end_time}
 
     return json_ret
+
+
+def apply_prediction(df: pd.DataFrame, prediction: Prediction):
+    """
+    Apply a given prediction to a dataframe.
+    Returns a new dataframe.
+    """
+    # this should be an Intent object?
+    new_ids = prediction.intent.apply(df)
+    return compute_intents(df, prediction.intent.dimensions, new_ids)
