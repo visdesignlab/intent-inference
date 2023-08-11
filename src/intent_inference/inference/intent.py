@@ -52,6 +52,8 @@ class Intent:
     def apply(self, data: pd.DataFrame):
         ids: List[str] = []
 
+        data.dropna()  # removes all missing values
+
         subset = data[self.dimensions]
 
         if self.intent == "Cluster":

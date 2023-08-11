@@ -53,15 +53,15 @@ def run_predictions(df: pd.DataFrame, dimensions: List[str], selections: List[an
 
     end_time = time.time() - start_time
 
-    json_ret = {"predictions": preds, "time": end_time}
+    ret = {"predictions": preds, "time": end_time}
 
-    return json_ret
+    return ret
 
 
 def apply_prediction(df: pd.DataFrame, prediction: Prediction):
     """
     Apply a given prediction to a dataframe.
-    Returns a new dataframe.
+    Returns a new list of predictions.
     """
     # Using intent.apply
     intent = Intent(
@@ -73,16 +73,18 @@ def apply_prediction(df: pd.DataFrame, prediction: Prediction):
 
     new_ids = intent.apply(df)
 
-    print("using intent.apply")
+    # update to return a better data structure
+    return {
+        "ids": new_ids,
+        "prediction": Prediction.from_intent(intent, df, new_ids),
+    }
 
-    return compute_predictions(df, intent.dimensions, new_ids)
 
-    # Using ipns and matches to generate new selection from prediction
-    # ipns = prediction['membership_stats']['ipns']
-    # matches = prediction['membership_stats']['matches']
+def apply_and_generate_predictions(df: pd.DataFrame, prediction: Prediction):
+    """
+    Apply a given prediction to a dataframe.
+    Returns a new list of predictions.
+    """
+    sel = apply_prediction(df, prediction)
 
-    # selections = list(set(ipns + matches))
-
-    # print("using ipns and matches")
-
-    # return compute_predictions(df, prediction['dimensions'], selections)
+    return compute_predictions(df, prediction['dimensions'], sel)
