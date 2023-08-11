@@ -2,6 +2,7 @@ import time
 from typing import List
 import pandas as pd
 
+from .inference.intent import Intent
 from .inference.inference import compute_intents
 from .inference.prediction import Prediction
 from .inference.inference import sort_and_keep_unique
@@ -62,6 +63,26 @@ def apply_prediction(df: pd.DataFrame, prediction: Prediction):
     Apply a given prediction to a dataframe.
     Returns a new dataframe.
     """
-    # this should be an Intent object?
-    new_ids = prediction.intent.apply(df)
-    return compute_intents(df, prediction.intent.dimensions, new_ids)
+    # Using intent.apply
+    intent = Intent(
+        prediction['intent'],
+        prediction['algorithm'],
+        prediction['dimensions'],
+        prediction['params'],
+        prediction['info'])
+
+    new_ids = intent.apply(df)
+
+    print("using intent.apply")
+
+    return compute_predictions(df, intent.dimensions, new_ids)
+
+    # Using ipns and matches to generate new selection from prediction
+    # ipns = prediction['membership_stats']['ipns']
+    # matches = prediction['membership_stats']['matches']
+
+    # selections = list(set(ipns + matches))
+
+    # print("using ipns and matches")
+
+    # return compute_predictions(df, prediction['dimensions'], selections)
