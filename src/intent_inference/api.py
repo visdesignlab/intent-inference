@@ -2,6 +2,7 @@ import time
 from typing import List
 import pandas as pd
 
+from .inference.intent import Intent
 from .inference.inference import compute_intents
 from .inference.prediction import Prediction
 from .inference.inference import sort_and_keep_unique
@@ -52,6 +53,38 @@ def run_predictions(df: pd.DataFrame, dimensions: List[str], selections: List[an
 
     end_time = time.time() - start_time
 
-    json_ret = {"predictions": preds, "time": end_time}
+    ret = {"predictions": preds, "time": end_time}
 
-    return json_ret
+    return ret
+
+
+def apply_prediction(df: pd.DataFrame, prediction: Prediction):
+    """
+    Apply a given prediction to a dataframe.
+    Returns a new list of predictions.
+    """
+    # Using intent.apply
+    intent = Intent(
+        prediction['intent'],
+        prediction['algorithm'],
+        prediction['dimensions'],
+        prediction['params'],
+        prediction['info'])
+
+    new_ids = intent.apply(df)
+
+    # update to return a better data structure
+    return {
+        "ids": new_ids,
+        "prediction": Prediction.from_intent(intent, df, new_ids),
+    }
+
+
+def apply_and_generate_predictions(df: pd.DataFrame, prediction: Prediction):
+    """
+    Apply a given prediction to a dataframe.
+    Returns a new list of predictions.
+    """
+    sel = apply_prediction(df, prediction)
+
+    return compute_predictions(df, prediction['dimensions'], sel)

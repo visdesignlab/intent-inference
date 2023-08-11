@@ -29,8 +29,16 @@ class Intent:
         self.dimensions = (
             dimensions.split(",") if isinstance(dimensions, str) else dimensions
         )
-        self.params = json.loads(params)
-        self.info = json.loads(info)
+        self.params = (
+            json.loads(params)
+            if isinstance(params, str)
+            else params
+        )
+        self.info = (
+            json.loads(info)
+            if isinstance(info, str)
+            else info
+        )
 
     @staticmethod
     def from_algorithm(alg: AlgorithmBase):
@@ -43,6 +51,8 @@ class Intent:
 
     def apply(self, data: pd.DataFrame):
         ids: List[str] = []
+
+        data.dropna()  # removes all missing values
 
         subset = data[self.dimensions]
 

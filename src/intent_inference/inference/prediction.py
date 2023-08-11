@@ -66,7 +66,7 @@ class Prediction:
     def from_intent(
         intent: Intent, data: pd.DataFrame, selections: List[str]
     ) -> List["Prediction"]:
-        data = data.dropna() # NOTE: Dropping na here. should always drop na?
+        data = data.dropna()  # NOTE: Dropping na here. should always drop na?
         cols = deepcopy(intent.dimensions)
         cols.append("id")
         if intent.algorithm == "DBScan":
