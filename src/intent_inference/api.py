@@ -1,5 +1,5 @@
 import time
-from typing import List
+from typing import List, Any
 import pandas as pd
 
 from .inference.intent import Intent
@@ -16,8 +16,16 @@ from .inference.inference import sort_and_keep_unique
 # API: part 2: returns new list of predictions
 
 
-def compute_predictions(df: pd.DataFrame, dimensions: List[str], selections: List[any]):
+
+def compute_predictions(df: pd.DataFrame, selections: List[Any], dimensions: List[str] = None, vegalite_spec: Any = None, n_top_predictions = 10):
     """
+    Args:
+        df: Dataframe on which predictions are to be made
+        dimensions: List of dimensions to predict over
+        selections: List of selections
+
+    Returns: List of predictions
+        
     Compute predictions for a given dataframe, dimensions, and selections.
     Returns a list of predictions.
     """
@@ -30,14 +38,12 @@ def compute_predictions(df: pd.DataFrame, dimensions: List[str], selections: Lis
     high_ranking_preds = list(filter(lambda x: x.rank_jaccard > 0.5, predictions))
 
     if len(high_ranking_preds) == 0:
-        return []
-
-    sorted_predictions = sort_and_keep_unique(high_ranking_preds)
-
-    if len(high_ranking_preds) >= 10:  # potentially parameterize this value
-        predictions = high_ranking_preds
+        predictions = sort_and_keep_unique(predictions)
     else:
-        predictions = sorted_predictions[:10]
+        predictions = sort_and_keep_unique(high_ranking_preds)
+
+        if len(predictions) > 10:  # potentially parameterize this value
+            predictions = predictions[:10]
 
     return predictions
 
