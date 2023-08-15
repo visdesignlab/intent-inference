@@ -23,7 +23,7 @@ class Inference:
         data: pd.DataFrame,
         user_selection: List[str],
         dimensions=List[str],
-        intents: List[Intent] = List,
+        intents: List[Intent] = [],
     ):
         self.data = data
         self.user_selections = user_selection
