@@ -1,11 +1,11 @@
 from typing import List
-
 import pandas as pd
 
 from ..compute.dbscan import dbscan_params
 from ..compute.isolationforest_outlier import isolationforest_params
 from ..compute.kmeans_cluster import kmeans_params
 from ..compute.regression import regression_params
+from .algorithms.Range import Range
 from .algorithms.DBScanCluster import DBScanCluster
 from .algorithms.DBScanOutlier import DBScanOutlier
 from .algorithms.IsolationForestOutlier import IsolationForestOutlier
@@ -75,7 +75,7 @@ def sort_and_keep_unique(predictions: List[Prediction]):
     return list(preds.T.to_dict().values())
 
 
-def compute_intents(_data: pd.DataFrame, _dimensions: List[str]) -> List[Intent]:
+def compute_intents(_data: pd.DataFrame, _dimensions: List[str], selections, row_id_label) -> List[Intent]:
     data = _data.dropna()
 
     epss, min_samples = dbscan_params(data.shape[0])
@@ -83,7 +83,8 @@ def compute_intents(_data: pd.DataFrame, _dimensions: List[str]) -> List[Intent]
     dimensions = [_dimensions]
 
     # Range selection
-    # TODO
+    ranges = Range.compute(data, _dimensions, selections, row_id_label)
+    intents.extend(map(lambda x: Intent(**x.to_dict()), ranges))
 
     # Outliers
     dbscan_outliers = DBScanOutlier.compute(data, dimensions, epss, min_samples)

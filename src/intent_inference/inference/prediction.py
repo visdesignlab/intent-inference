@@ -167,6 +167,9 @@ class Prediction:
                 pred.membership_stats = get_stats(pred.members, selections)
                 # pred.info["edges"] = skyline
                 preds.append(pred)
+            elif intent.algorithm == "DT":
+                return []
+
         except Exception as ex:
             print(ex)
         finally:

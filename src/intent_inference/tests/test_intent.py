@@ -15,7 +15,15 @@ class TestIntent(TestCase):
         data_c = data.copy(deep=True)
         data_c = data_c.reset_index(names=label_col)
 
-        sels = data_c[label_col].sample(40).tolist()
+        sels = []
+
+
+        while sum(sels) == 0:
+            x_min, x_max = data_c["X"].sample(2).tolist()
+            y_min, y_max = data_c["Y"].sample(2).tolist()
+            # y_min, y_max = data_c["Y"].min(), data_c["Y"].max()
+
+            sels = (data_c["X"].between(x_min, x_max) & data_c["Y"].between(y_min, y_max)).tolist()
 
         preds = compute_predictions(
             data,

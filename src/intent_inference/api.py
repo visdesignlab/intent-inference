@@ -1,4 +1,5 @@
 import time
+from intent_inference.compute.range import range_alg
 from typing import List, Any
 import pandas as pd
 
@@ -39,7 +40,7 @@ def compute_predictions(
     if row_id_label not in df:
         df = df.reset_index(names=row_id_label) # if no label column, use index 
 
-    intents = compute_intents(df, dimensions) # compute all algorithm outputs
+    intents = compute_intents(df, dimensions, selections, row_id_label) # compute all algorithm outputs
 
 
     for intent in intents:
@@ -54,6 +55,7 @@ def compute_predictions(
         predictions = predictions[:n_top_predictions] # take top n preds
     else: 
         predictions = high_ranking_preds 
+
 
     return predictions
 
@@ -95,6 +97,7 @@ def apply_prediction(
     )
 
     new_ids = intent.apply(df, row_id_label)
+
 
     # update to return a better data structure
     return {

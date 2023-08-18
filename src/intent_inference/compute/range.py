@@ -11,6 +11,12 @@ def range_alg(data: pd.DataFrame, selection, max_depth=None):
 
     return rules
 
+def range_clf(data, selection, max_depth=None):
+    clf = tree.DecisionTreeClassifier(max_depth=max_depth)
+
+    clf.fit(data, selection)
+
+    return clf
 
 def get_mask_from_exp(data, exp):
     feature, op, val, mask = None, None, None, None
@@ -88,4 +94,4 @@ def get_decision_paths(model: tree.DecisionTreeClassifier, data, selection):
 
     mask = get_mask_from_rules(data, paths)
 
-    return paths, mask
+    return paths, mask, leaf_id
