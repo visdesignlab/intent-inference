@@ -56,9 +56,13 @@ class Inference:
 
 
 def sort_and_keep_unique(predictions: List[Prediction]):
+    if len(predictions) == 0:
+        return []
+
     preds = list(map(lambda x: x.to_dict(), predictions))
 
     preds = pd.DataFrame(preds)
+
 
     preds.rank_jaccard = preds.rank_jaccard.round(5)
 
@@ -71,10 +75,15 @@ def sort_and_keep_unique(predictions: List[Prediction]):
     return list(preds.T.to_dict().values())
 
 
-def compute_intents(data: pd.DataFrame, _dimensions: List[str]) -> List[Intent]:
+def compute_intents(_data: pd.DataFrame, _dimensions: List[str]) -> List[Intent]:
+    data = _data.dropna()
+
     epss, min_samples = dbscan_params(data.shape[0])
     intents: List[Intent] = []
     dimensions = [_dimensions]
+
+    # Range selection
+    # TODO
 
     # Outliers
     dbscan_outliers = DBScanOutlier.compute(data, dimensions, epss, min_samples)

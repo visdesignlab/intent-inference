@@ -1,5 +1,6 @@
 from .consts import *
 
+
 def jaccard_similarity(l1, l2):
     s1 = set(l1)
     s2 = set(l2)

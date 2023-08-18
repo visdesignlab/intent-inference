@@ -4,3 +4,7 @@ tests/__pycache__
 .vscode/
 .mypy_cache/
 *.pyc
+.testmon*
+.tox
+
+bootstrap-dev-env.sh.zwc
