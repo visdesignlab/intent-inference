@@ -64,140 +64,113 @@ class Prediction:
     # TODO: not necessarily needed
     @staticmethod
     def from_intent(
-            intent: Intent, data: pd.DataFrame, selections: List[str], row_id: str
+        intent: Intent, data: pd.DataFrame, selections: List[str], row_id: str
     ) -> List["Prediction"]:
-        data = data.dropna()  # NOTE: Dropping na here. should always drop na?
+        data = data.dropna()  # NOTE: Dropping na here. should always drop na.
+
         cols = deepcopy(intent.dimensions)
         cols.append(row_id)
-        if intent.algorithm == "DBScan":
-            if intent.intent == "Outlier":
-                mask = np.array(intent.output) == -1
 
-                selected = []
-                try:
-                    selected = data[cols].dropna()[mask][row_id].tolist()
-                except:
-                    pass
+        preds: List[Prediction] = []
 
-                preds: List[Prediction] = []
+        try:
+            if intent.algorithm == "DBScan":
                 cluster_vals = np.unique(intent.output)
+
                 for cluster_id in cluster_vals:
-                    if cluster_id == -1:
-                        continue
                     mask = np.array(intent.output) == cluster_id
-                    selected = data[cols].dropna()[mask][row_id].tolist()
+                    selected = data[cols][mask][row_id].tolist()
                     pred = Prediction(intent)
                     pred.members = selected
                     pred.rank_jaccard = jaccard_similarity(pred.members, selections)
                     pred.membership_stats = get_stats(pred.members, selections)
                     pred.info["members"] = selected
-                    pred.info["hull"] = get_hull(data.loc[mask, intent.dimensions])
+                    # pred.info["hull"] = get_hull(data.loc[mask, intent.dimensions])
                     preds.append(pred)
-                return preds
-        elif intent.algorithm == "Isolation Forest":
-            mask = np.array(intent.output) == -1
+            elif intent.algorithm == "Isolation Forest":
+                mask = np.array(intent.output) == -1
 
-            selected = []
-            try:
-                selected = data[cols].dropna()[mask][row_id].tolist()
-            except:
-                pass
+                selected = data[cols][mask][row_id].tolist()
 
-            pred = Prediction(intent)
-            pred.members = selected
-            pred.rank_jaccard = jaccard_similarity(pred.members, selections)
-            pred.membership_stats = get_stats(pred.members, selections)
-            return [pred]
-        elif intent.algorithm == "KMeans":
-            preds: List[Prediction] = []
-            cluster_vals = np.unique(intent.output)
-            for cluster_id in cluster_vals:
-                if cluster_id == -1:
-                    continue
-                mask = np.array(intent.output) == cluster_id
-                selected = []
-                try:
-                    selected = data[cols].dropna()[mask][row_id].tolist()
-                except:
-                    pass
                 pred = Prediction(intent)
                 pred.members = selected
                 pred.rank_jaccard = jaccard_similarity(pred.members, selections)
                 pred.membership_stats = get_stats(pred.members, selections)
-                pred.info["selected_center"] = pred.info["centers"][cluster_id]
-                pred.info["hull"] = get_hull(data[intent.dimensions][mask])
                 preds.append(pred)
+            elif intent.algorithm == "KMeans":
+                cluster_vals = np.unique(intent.output)
+                for cluster_id in cluster_vals:
+                    if cluster_id == -1:
+                        continue
+                    mask = np.array(intent.output) == cluster_id
+                    selected = []
+                    selected = data[cols][mask][row_id].tolist()
+                    pred = Prediction(intent)
+                    pred.members = selected
+                    pred.rank_jaccard = jaccard_similarity(pred.members, selections)
+                    pred.membership_stats = get_stats(pred.members, selections)
+                    pred.info["selected_center"] = pred.info["centers"][cluster_id]
+                    # pred.info["hull"] = get_hull(data[intent.dimensions][mask])
+                    preds.append(pred)
+            elif intent.algorithm == "TheilSenRegressor":
+                output = np.array(intent.output)
+
+                inlier_mask = output == 1
+                outlier_mask = output == 0
+
+                inliers = data[cols][inlier_mask][row_id].tolist()
+
+                inlier_pred = Prediction(intent)
+                inlier_pred.members = inliers
+                inlier_pred.rank_jaccard = jaccard_similarity(inliers, selections)
+                inlier_pred.membership_stats = get_stats(inliers, selections)
+                inlier_pred.info["type"] = "Within"
+
+                outliers = data[cols][outlier_mask][row_id].tolist()
+                outlier_pred = Prediction(intent)
+                outlier_pred.members = outliers
+                outlier_pred.rank_jaccard = jaccard_similarity(outliers, selections)
+                outlier_pred.membership_stats = get_stats(outliers, selections)
+                outlier_pred.info["type"] = "Outside"
+
+                preds.extend([inlier_pred, outlier_pred])
+            elif intent.algorithm == "Polynomial Features + TheilSenRegressor":
+                output = np.array(intent.output)
+
+                inlier_mask = output == 1
+                outlier_mask = output == 0
+
+                inliers = data[cols][inlier_mask][row_id].tolist()
+
+                inlier_pred = Prediction(intent)
+                inlier_pred.members = inliers
+                inlier_pred.rank_jaccard = jaccard_similarity(inliers, selections)
+                inlier_pred.membership_stats = get_stats(inliers, selections)
+                inlier_pred.info["type"] = "Within"
+
+                outliers = data[cols][outlier_mask][row_id].tolist()
+                outlier_pred = Prediction(intent)
+                outlier_pred.members = outliers
+                outlier_pred.rank_jaccard = jaccard_similarity(outliers, selections)
+                outlier_pred.membership_stats = get_stats(outliers, selections)
+                outlier_pred.info["type"] = "Outside"
+
+                preds.extend([inlier_pred, outlier_pred])
+            elif intent.algorithm == "BNL":
+                mask = np.array(intent.output) == 1
+
+                skyline = data[cols][mask][row_id].tolist()
+
+                pred = Prediction(intent)
+                pred.members = skyline
+                pred.rank_jaccard = jaccard_similarity(pred.members, selections)
+                pred.membership_stats = get_stats(pred.members, selections)
+                # pred.info["edges"] = skyline
+                preds.append(pred)
+        except Exception as ex:
+            print(ex)
+        finally:
             return preds
-        elif intent.algorithm == "TheilSenRegressor":
-            output = np.array(intent.output)
-
-            inlier_mask = output == 1
-            outlier_mask = output == 0
-
-            inliers = []
-                
-            try:
-                inliers = data[cols].dropna()[inlier_mask][row_id].tolist()
-            except:
-                inliers = []
-
-            inlier_pred = Prediction(intent)
-            inlier_pred.members = inliers
-            inlier_pred.rank_jaccard = jaccard_similarity(inliers, selections)
-            inlier_pred.membership_stats = get_stats(inliers, selections)
-            inlier_pred.info["type"] = "Within"
-
-            outliers = data[cols].dropna()[outlier_mask][row_id].tolist()
-            outlier_pred = Prediction(intent)
-            outlier_pred.members = outliers
-            outlier_pred.rank_jaccard = jaccard_similarity(outliers, selections)
-            outlier_pred.membership_stats = get_stats(outliers, selections)
-            outlier_pred.info["type"] = "Outside"
-
-            return [inlier_pred, outlier_pred]
-        elif intent.algorithm == "Polynomial Features + TheilSenRegressor":
-            output = np.array(intent.output)
-
-            inlier_mask = output == 1
-            outlier_mask = output == 0
-
-            inliers = []
-
-            try: 
-                inliers = data[cols].dropna()[inlier_mask][row_id].tolist()
-            except:
-                inliers = []
-
-            inlier_pred = Prediction(intent)
-            inlier_pred.members = inliers
-            inlier_pred.rank_jaccard = jaccard_similarity(inliers, selections)
-            inlier_pred.membership_stats = get_stats(inliers, selections)
-            inlier_pred.info["type"] = "Within"
-
-            outliers = data[cols].dropna()[outlier_mask][row_id].tolist()
-            outlier_pred = Prediction(intent)
-            outlier_pred.members = outliers
-            outlier_pred.rank_jaccard = jaccard_similarity(outliers, selections)
-            outlier_pred.membership_stats = get_stats(outliers, selections)
-            outlier_pred.info["type"] = "Outside"
-
-            return [inlier_pred, outlier_pred]
-        elif intent.algorithm == "BNL":
-            mask = np.array(intent.output) == 1
-            skyline = []
-
-            try:
-                skyline = data[cols].dropna()[mask][row_id].tolist()
-            except:
-                pass
-
-            pred = Prediction(intent)
-            pred.members = skyline
-            pred.rank_jaccard = jaccard_similarity(pred.members, selections)
-            pred.membership_stats = get_stats(pred.members, selections)
-            pred.info["edges"] = skyline
-            return [pred]
-        return []
 
 
 def get_stats(members, sels):
@@ -210,8 +183,3 @@ def get_stats(members, sels):
         "matches": list(set(sels).intersection(set(members))),
     }
     return stats
-
-
-def getUIDForString(toHash: str):
-    md5 = hashlib.md5(toHash.encode())
-    return md5.hexdigest()

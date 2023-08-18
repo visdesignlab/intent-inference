@@ -15,13 +15,13 @@ from .inference.inference import sort_and_keep_unique
 # API: part 2: apply_prediction(prediction, dataframe)
 # API: part 2: returns new list of predictions
 
+
 def compute_predictions(
     df: pd.DataFrame,
     selections: List[Any],
-    dimensions: List[str] = [],
-    vegalite_spec: Any = None,
+    dimensions: List[str],
+    row_id_label = "index",
     n_top_predictions=10,
-    row_id_label="__row_id__",
 ):
     """
     Args:
@@ -35,33 +35,37 @@ def compute_predictions(
     Returns a list of predictions.
     """
     predictions = []
-    intents = compute_intents(df, dimensions)
+
+    if row_id_label not in df:
+        df = df.reset_index(names=row_id_label) # if no label column, use index 
+
+    intents = compute_intents(df, dimensions) # compute all algorithm outputs
+
 
     for intent in intents:
-        predictions.extend(Prediction.from_intent(intent, df, selections, row_id_label))
+        predictions.extend(Prediction.from_intent(intent, df, selections, row_id_label)) # compare to user selections
 
-    high_ranking_preds = list(filter(lambda x: x.rank_jaccard > 0.5, predictions))
 
-    if len(high_ranking_preds) == 0:
-        predictions = sort_and_keep_unique(predictions)
-        predictions = predictions[:n_top_predictions]
-    else:
-        predictions = sort_and_keep_unique(high_ranking_preds)
+    high_ranking_preds = list(filter(lambda x: x.rank_jaccard > 0.5, predictions)) # predictions with more than 0.5 jaccard_similarity
+    high_ranking_preds = sort_and_keep_unique(high_ranking_preds)
 
-        if len(predictions) > n_top_predictions:  # potentially parameterize this value
-            predictions = predictions[:n_top_predictions]
+    if len(high_ranking_preds) < n_top_predictions: # if the list is empty 
+        predictions = sort_and_keep_unique(predictions) # sort and keep unique entries (based on combo of intent, algo & jaccard_similarity)
+        predictions = predictions[:n_top_predictions] # take top n preds
+    else: 
+        predictions = high_ranking_preds 
 
     return predictions
 
 
-def run_predictions(df: pd.DataFrame, dimensions: List[str], selections: List[any]):
+def run_predictions(df: pd.DataFrame, dimensions: List[str], selections: List[any], row_id_label = "index", n_top_predictions=10):
     """
     Compute predictions for a given dataframe, dimensions, and selections.
     Returns a list of predictions as well as the time taken to generate them.
     """
     start_time = time.time()
 
-    preds = compute_predictions(df, dimensions, selections)
+    preds = compute_predictions(df, selections, dimensions, row_id_label, n_top_predictions)
 
     end_time = time.time() - start_time
 
@@ -70,11 +74,17 @@ def run_predictions(df: pd.DataFrame, dimensions: List[str], selections: List[an
     return ret
 
 
-def apply_prediction(df: pd.DataFrame, prediction: Prediction, row_id_label="__row_id__"):
+def apply_prediction(
+    df: pd.DataFrame, prediction: Prediction, row_id_label = "index"
+):
     """
     Apply a given prediction to a dataframe.
     Returns a new list of predictions.
     """
+
+    if row_id_label not in df:
+        df = df.reset_index(names=row_id_label) # if no label column, use index 
+
     # Using intent.apply
     intent = Intent(
         prediction["intent"],

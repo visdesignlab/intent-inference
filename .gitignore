@@ -7,3 +7,4 @@ tests/__pycache__
 .testmon*
 .tox
 
+bootstrap-dev-env.sh.zwc

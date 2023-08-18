@@ -50,7 +50,6 @@ class Intent:
 
         if self.intent == "Cluster":
             if self.algorithm == "KMeans":
-                print(self.info)
                 clf = kmeans_cluster(
                     subset.values,
                     self.params["n_clusters"],
@@ -65,9 +64,8 @@ class Intent:
                 clf = dbscan(
                     subset.values, self.params["eps"], self.params["min_samples"]
                 )
-                subset["labels"] = clf.labels_
-                print(np.unique(clf.labels_))
-                subset[row_id] = data[row_id]
+                subset.loc[:, "labels"] = clf.labels_
+                subset.loc[:, row_id] = data[row_id]
                 org_pts = set(self.info["members"])
                 groups = subset.groupby("labels")
                 distances = {}
@@ -91,7 +89,7 @@ class Intent:
                     subset.values, self.params["contamination"]
                 )
                 subset[row_id] = data[row_id]
-                subset["labels"] = labels
+                subset["labels"] = labels # ? why?
                 ids = subset[subset.labels == -1][row_id].tolist()
         elif self.intent == "Multivariate Optimization":
             mask = pareto(subset.values, self.params["sense"])
