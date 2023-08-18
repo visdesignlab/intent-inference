@@ -4,3 +4,6 @@ tests/__pycache__
 .vscode/
 .mypy_cache/
 *.pyc
+.testmon*
+.tox
+
