@@ -75,18 +75,29 @@ class Prediction:
 
         try:
             if intent.algorithm == "DBScan":
-                cluster_vals = np.unique(intent.output)
-
-                for cluster_id in cluster_vals:
-                    mask = np.array(intent.output) == cluster_id
+                if intent.intent == "Outlier":
+                    mask = np.array(intent.output) == -1
                     selected = data[cols][mask][row_id].tolist()
                     pred = Prediction(intent)
                     pred.members = selected
                     pred.rank_jaccard = jaccard_similarity(pred.members, selections)
                     pred.membership_stats = get_stats(pred.members, selections)
-                    pred.info["members"] = selected
-                    # pred.info["hull"] = get_hull(data.loc[mask, intent.dimensions])
                     preds.append(pred)
+                else:
+                    cluster_vals = np.unique(intent.output)
+
+                    for cluster_id in cluster_vals:
+                        if cluster_id == -1:
+                            continue
+                        mask = np.array(intent.output) == cluster_id
+                        selected = data[cols][mask][row_id].tolist()
+                        pred = Prediction(intent)
+                        pred.members = selected
+                        pred.rank_jaccard = jaccard_similarity(pred.members, selections)
+                        pred.membership_stats = get_stats(pred.members, selections)
+                        pred.info["members"] = selected
+                        # pred.info["hull"] = get_hull(data.loc[mask, intent.dimensions])
+                        preds.append(pred)
             elif intent.algorithm == "Isolation Forest":
                 mask = np.array(intent.output) == -1
 
